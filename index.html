@@ -159,17 +159,18 @@
                 <!-- 3. slid section -->
                 <div class="container-fluid mt-4 px-5">
                     <!-- Navigation Tabs -->
-                    <ul class="nav nav-tabs productNav">
-                        <li class="nav-item" v-for="category in categories" :key="category.id">
-                            <a class="nav-link text-dark fw-semibold" 
-                            :class="{ 'active bg-primary text-white': activeCategory === category.id }"
-
-                                @click="confirmCategoryChange(category.id)">
-                                {{ category.name }}
-                            </a>
-                        </li>
-                    </ul>
-                
+                    <div>
+                      <ul class="nav nav-tabs productNav d-flex flex-wrap">
+                          <li class="nav-item" v-for="category in categories" :key="category.id">
+                              <a class="nav-link text-dark fw-semibold" 
+                                 :class="{ 'active bg-primary text-white': activeCategory === category.id }"
+                                 @click="confirmCategoryChange(category.id)">
+                                  {{ category.name }}
+                              </a>
+                          </li>
+                      </ul>
+                  </div>
+                  
                     <!-- Main Content: Products on Left, Order Summary Fixed on Right -->
                     <div class="products-container">
                         <!-- Left Side: Scrollable Product Cards -->
