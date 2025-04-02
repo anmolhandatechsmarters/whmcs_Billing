@@ -300,6 +300,80 @@
                 {{ selectedExtension }}
               </button>
               <ul class="dropdown-menu">
+                <li v-for="ext in extensions" :key="ext.extension">
+                  <a class="dropdown-item" href="#" @click.prevent="selectExtension(ext)">
+                    {{ ext.extension }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
+            <button class="btn btn-primary py-2 px-4" @click="searchDomain">
+              Search
+            </button>
+          </div>
+          
+          <div v-if="domainResults.length > 0" class="domain-results mt-4">
+            <h5>Available Domains</h5>
+            <div class="list-group">
+              <div v-for="result in domainResults" :key="result.domain" 
+                class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <span>{{ result.domain}}{{selectedExtension}}</span>
+                  <span class="badge bg-success ms-2">${{ result.price }}/year</span>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-primary dropdown-toggle" type="button" 
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Add to Cart
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#" @click.prevent="addToCart(result, 1)">
+                        1 Year - ${{ result.price }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click.prevent="addToCart(result, 2)">
+                        2 Years - ${{ (result.price * 2).toFixed(2) }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click.prevent="addToCart(result, 3)">
+                        3 Years - ${{ (result.price * 3).toFixed(2) }}
+                      </a>
+                    </li>
+      
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div v-if="activewebDomainbar === 'trans'">
+        <div class="domain-search-container">
+          <div class="d-flex align-items-center gap-2 mb-4">
+            <div class="d-flex flex-grow-1 border rounded overflow-hidden">
+              <span class="bg-light py-2 px-3 d-flex align-items-center">www.</span>
+              <input
+                type="text"
+                v-model="newDomain"
+                class="form-control border-0 py-2 px-3 flex-grow-1"
+                placeholder="yourdomain"
+                @keyup.enter="searchDomain"
+              >
+            </div>
+            
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" 
+                data-bs-toggle="dropdown" aria-expanded="false">
+                {{ selectedExtension }}
+              </button>
+              <ul class="dropdown-menu">
                 <li v-for="ext in extensions" :key="ext">
                   <a class="dropdown-item" href="#" @click.prevent="selectExtension(ext)">
                     {{ ext }} - ${{ getPrice(ext) }}
@@ -356,6 +430,7 @@
           </div>
         </div>
       </div>
+
 
       <!-- Mini Cart Preview (can be placed anywhere in your layout) -->
       <!-- <div class="mt-4" v-if="cartItems.length > 0">
@@ -666,10 +741,6 @@
 
 
                         </div>
-                
-
-
-                        
                         <!-- Right Side: Fixed Order Summary -->
                         <div class="fixed-card">
                             <div class=" checkout-card cardShadow">
@@ -688,7 +759,16 @@
                                                     <li v-for="(feature, i) in item.Features" :key="i">✔ {{ feature }}</li>
                                                 </ul>
                                             </div>
-                                            <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
+                                            <div v-if="cartItems && cartItems.length">
+                                              <h6 class="mt-3">Cart Items:</h6>
+                                              <div v-for="(cart, index) in cartItems" :key="'cart-' + index" class="border-bottom pb-2 mb-2">
+                                                  <p class="mb-0"><strong>{{ cart.domain || '' }}{{ cart.extension || '' }}</strong></p>
+                                                  <p class="text-muted mb-0">Years: {{ cart.years || 'N/A' }}</p>
+                                                  <p class="mb-0"><strong>Price Per Year:</strong> {{ cart.pricePerYear || 'N/A' }}</p>
+                                                  <p class="mb-0"><strong>Total Price:</strong> {{ cart.totalPrice || 'N/A' }}</p>
+                                              </div>
+                                          </div>
+                                            <button class="btn btn-primary w-100 mt-3" @click="ProceedCheckout()">Proceed to Checkout</button>
                                         </div>
                                         <p v-else class="text-center text-muted">Select a plan to see details here.</p>
                                     </div>

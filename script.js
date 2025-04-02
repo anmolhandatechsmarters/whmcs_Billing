@@ -23,7 +23,7 @@ new Vue({
         }
 
      this.addProductData()
-    
+    console.log("data",this.checkoutOverview[0].cart)
      
     },
     data() {
@@ -35,20 +35,18 @@ new Vue({
             selectedBilling: null,
             newDomain:"",
       selectedExtension: '.com',
-      extensions: [
-        'com',
-        '.net',
-        '.org' ,
-        '.io',
-        '.co'
-      ],
+
       domainResults: [],
       // Cart functionality
       cartItems: [],
       wishlistItems: [],
-    
-            selectedExtension: '.com',
-      extensions: ['.com', '.net', '.org', '.io', '.co', '.dev'],
+  
+      extensions: [{ extension: '.com', price: 12.99 },
+        { extension: '.net', price: 10.99 },
+        { extension: '.org', price: 9.99 },
+        { extension: '.io', price: 34.99 },
+        { extension: '.co', price: 22.99 },
+        { extension: '.dev', price: 14.99 }],
         activewebDomainbar:"reg",
             webdomainCategory:[
                 { id: "reg", name: "Register Domain" },
@@ -63,14 +61,14 @@ new Vue({
             products: [
                 { id: 1, category: "web", name: "Single", price: 2.99, time: "Monthly", Features: ["Basic Hosting", "1GB Storage", "10GB Bandwidth"] },
                 { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 2, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
-                { id: 3, category: "vps", name: "VPS-1", price: 9.99, time: "Monthly", Features: ["1 vCPU", "2GB RAM", "50GB SSD"] },
-                { id: 4, category: "vps", name: "VPS-2", price: 19.99, time: "Monthly", Features: ["2 vCPU", "4GB RAM", "100GB SSD"] },
-                { id: 5, category: "dedicated", name: "Dedicated-1", price: 99.99, time: "Monthly", Features: ["4 vCPU", "16GB RAM", "500GB SSD"] }
+                { id: 3, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
+                { id: 4, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
+                { id: 5, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
+                { id: 6, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
+                { id: 7, category: "web", name: "Premium", price: 5.99, time: "Monthly", Features: ["Advanced Hosting", "5GB Storage", "50GB Bandwidth"] },
+                { id: 8, category: "vps", name: "VPS-1", price: 9.99, time: "Monthly", Features: ["1 vCPU", "2GB RAM", "50GB SSD"] },
+                { id: 9, category: "vps", name: "VPS-2", price: 19.99, time: "Monthly", Features: ["2 vCPU", "4GB RAM", "100GB SSD"] },
+                { id: 10, category: "dedicated", name: "Dedicated-1", price: 99.99, time: "Monthly", Features: ["4 vCPU", "16GB RAM", "500GB SSD"] }
             ],
             
             productBilling: [
@@ -147,6 +145,7 @@ new Vue({
     watch: {
         activeCategory() {
             this.autoSelectFirstItem();
+            this.localStorage
         }
         ,   selectedProduct: "updateCheckoutOverview",
     selectedBilling: "updateCheckoutOverview",
@@ -156,13 +155,18 @@ new Vue({
     }
     },
     methods: {
-        addProductData() {
-            if (this.selectedProduct && this.selectedBilling) {
-                this.checkoutOverview.push(this.selectedProduct, this.selectedBilling);
-            } else {
-                console.warn("selectedProduct or selectedBilling is null");
-            }
-        },
+      addProductData() {
+        if (this.selectedProduct && this.selectedBilling) {
+            this.checkoutOverview.push({
+                product: { ...this.selectedProduct },
+                billing: { ...this.selectedBilling },
+                cart: [...this.cartItems]
+            });
+        } else {
+            console.warn("selectedProduct or selectedBilling is null");
+        }
+    },
+  
         updateCheckoutOverview() {
             if (this.selectedProduct && this.selectedBilling) {
                 this.checkoutOverview = [this.selectedProduct, this.selectedBilling];
@@ -230,7 +234,7 @@ this.activewebDomainbar=categoryId
 console.log(this.activewebDomainbar)
             },
             selectExtension(ext) {
-                this.selectedExtension = ext;
+                this.selectedExtension = ext.extension;
             },
             getPrice(ext) {
                 const extension = this.extensions.find(e => e.ext === ext);
@@ -241,21 +245,17 @@ console.log(this.activewebDomainbar)
                 
                 // Simulate API call
                 this.domainResults = this.extensions.map(ext => ({
-                  domain: `${this.newDomain}${ext.ext}`,
+                  domain: `${this.newDomain}`,
                   price: ext.price,
-                  extension: ext.ext
+                  extension: ext.extension
                 }));
               },
               addToCart(domain, years) {
-                const existingItem = this.cartItems.find(
-                  item => item.domain === domain.domain && item.years === years
-                );
+                // const existingItem = this.cartItems.find(
+                //   item => item.domain === domain.domain && item.years === years
+                // );
                 
-                if (existingItem) {
-                  // Item already in cart, you might want to increase quantity instead
-                  this.$toast.warning('This item is already in your cart');
-                  return;
-                }
+             
                 
                 this.cartItems.push({
                   domain: domain.domain,
@@ -265,26 +265,8 @@ console.log(this.activewebDomainbar)
                   totalPrice: (domain.price * years).toFixed(2)
                 });
                 
-                this.$toast.success('Added to cart');
               },
-              addToWishlist(domain) {
-                this.wishlistItems.push({
-                  domain: domain.domain,
-                  extension: domain.extension,
-                  price: domain.price
-                });
-                this.$toast.info('Added to wishlist');
-              },
-              removeFromCart(index) {
-                this.cartItems.splice(index, 1);
-                this.$toast.info('Removed from cart');
-              },
-              checkout() {
-                // Implement your checkout logic
-                console.log('Proceeding to checkout with:', this.cartItems);
-                this.$toast.success('Redirecting to checkout');
-                // Typically you would navigate to a checkout page here
-              },
+
               processStripePayment() {
                 console.log('Processing Stripe Payment:', {
                   cardNumber: this.stripe.cardNumber,
@@ -324,9 +306,51 @@ console.log(this.activewebDomainbar)
                 alert("Thank you for agreeing to all policies!");
                 console.log("User agreed to:", this.agreements);
                 // Proceed with your form submission or next step
-              }
+              },
             
-          
+              ProceedCheckout() {
+                if (!this.checkoutOverview.length) {
+                    alert('Please select a product and billing plan.');
+                    return;
+                }
+                if (!this.activewebDomainbar) {
+                    alert('Please select a domain.');
+                    return;
+                }
+                if (!this.cartItems.length) {
+                    alert('Your cart is empty.');
+                    return;
+                }
+                if (!this.login.email && !this.register.firstName) {
+                    alert('Please fill in your account details.');
+                    return;
+                }
+                if (this.paymentMethod === 'stripe' && !this.stripe.cardNumber) {
+                    alert('Please enter your Stripe payment details.');
+                    return;
+                }
+                if (this.paymentMethod === 'bank' && !this.bank.accountName) {
+                    alert('Please enter your bank transfer details.');
+                    return;
+                }
+                if (!this.agreements.terms || !this.agreements.privacy || !this.agreements.refund) {
+                    alert('You must agree to all terms and conditions.');
+                    return;
+                }
+                console.log('Checkout Details:', {
+                    checkoutOverview: this.checkoutOverview,
+                    cartItems: this.cartItems,
+                    activewebDomainbar: this.activewebDomainbar,
+                    login: this.login,
+                    register: this.register,
+                    paymentMethod: this.paymentMethod,
+                    stripe: this.stripe,
+                    bank: this.bank,
+                    agreements: this.agreements
+                });
+                alert('Checkout successful!');
+            }
+        
             
           
             

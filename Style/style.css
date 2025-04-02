@@ -26,6 +26,10 @@
     height: 100%;
 }
 
+.ProductoverviewCard{
+    height: 500px;
+    overflow-y:auto;
+}
 .checkout-card {
     margin: 100px 0px;
 }
@@ -49,7 +53,23 @@
 }
 
 .ProductoverviewCard {
-    width: 300px;
+        width: 300px;
+}
+
+.ProductoverviewCard {
+    height: 600px;
+    overflow-y: auto;  
+    border: 1px solid #ccc; 
+    padding: 10px; 
+}
+
+.card-body {
+    max-height: 430px; 
+    overflow-y: auto; 
+}
+.card-body::-webkit-scrollbar {
+    width: 20px;
+    
 }
 
 /* Responsive Design for Tablets */
