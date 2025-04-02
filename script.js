@@ -1,7 +1,7 @@
 new Vue({
     el: '#app',
     mounted() {
-        console.log("In mounted");
+      window.addEventListener('resize', this.handleResize);
 
         // Retrieve saved selections from localStorage
         const savedProduct = localStorage.getItem("selectedProduct");
@@ -28,6 +28,8 @@ new Vue({
     },
     data() {
         return {
+          windowWidth: window.innerWidth,
+          showControls: true,
             checkoutOverview:[],
             tempCategory:null,
             activeCategory:"web" ,
@@ -126,19 +128,20 @@ new Vue({
         filteredBillingOptions() {
             return this.productBilling.filter(billing => billing.category === this.activeCategory);
         },
+        productsPerChunk() {
+          if (this.windowWidth < 576) return 1;    // X-Small devices (1 item)
+          if (this.windowWidth < 768) return 2;    // Small devices (2 items)
+          if (this.windowWidth < 992) return 3;    // Medium devices (3 items)
+          return 4;                                // Large devices (4 items)
+        },
         chunkedProducts() {
-          let chunkSize = 3;
-          // if (window.innerWidth < 768) { // Corrected condition for small screens
-          //     chunkSize = 1;
-          // }
-      
-          let chunks = [];
-          for (let i = 0; i < this.filteredProducts.length; i += chunkSize) {
-              chunks.push(this.filteredProducts.slice(i, i + chunkSize));
+          const chunks = [];
+          for (let i = 0; i < this.filteredProducts.length; i += this.productsPerChunk) {
+            chunks.push(this.filteredProducts.slice(i, i + this.productsPerChunk));
           }
-          
           return chunks;
-      }
+        }
+      
       
       
     },
@@ -321,10 +324,11 @@ console.log(this.activewebDomainbar)
                     alert('Your cart is empty.');
                     return;
                 }
-                if (!this.login.email && !this.register.firstName) {
-                    alert('Please fill in your account details.');
-                    return;
-                }
+                if (!this.login.email && (!this.register.firstName && !this.register.lastName && !this.register.email)) {
+                  alert('Please fill in your account details.');
+                  return;
+              }
+              
                 if (this.paymentMethod === 'stripe' && !this.stripe.cardNumber) {
                     alert('Please enter your Stripe payment details.');
                     return;
@@ -349,11 +353,22 @@ console.log(this.activewebDomainbar)
                     agreements: this.agreements
                 });
                 alert('Checkout successful!');
+            },
+            handleResize() {
+              this.windowWidth = window.innerWidth;
+              // Hide controls briefly during resize to prevent layout issues
+              this.showControls = false;
+              setTimeout(() => {
+                this.showControls = true;
+              }, 100);
             }
         
             
           
             
     
-    }
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.handleResize);
+    },
 });
