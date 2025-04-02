@@ -160,7 +160,7 @@
                 <div class="container-fluid mt-4 px-5">
                     <!-- Navigation Tabs -->
                     <div>
-                      <ul class="nav nav-tabs productNav d-flex flex-wrap">
+                      <ul class="nav nav-tabs productNav d-flex justify-content-center flex-nowrap overflow-auto">
                           <li class="nav-item" v-for="category in categories" :key="category.id">
                               <a class="nav-link text-dark fw-semibold" 
                                  :class="{ 'active bg-primary text-white': activeCategory === category.id }"
@@ -170,6 +170,7 @@
                           </li>
                       </ul>
                   </div>
+                  
                   
                     <!-- Main Content: Products on Left, Order Summary Fixed on Right -->
                     <div class="products-container">
