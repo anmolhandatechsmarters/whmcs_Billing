@@ -1,0 +1,108 @@
+.products-container {
+    display: flex;
+    width: 100%;
+    position: relative;
+    flex-wrap: wrap; /* Ensures proper wrapping on small screens */
+}
+
+.product-list {
+    margin-top: 30px;
+    width: 70%;
+}
+
+.product-card {
+    margin-top: 10px;
+}
+
+.fixed-card {
+    position: sticky;
+    display: flex;
+    justify-content: center;
+    max-width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    right: 0;
+    top: 0;
+    height: 100%;
+}
+
+.checkout-card {
+    margin: 100px 0px;
+}
+
+.custom-prev {
+    left: -40px !important; /* Move the backward arrow further left */
+}
+
+.custom-next {
+    right: -40px !important; /* Move the forward arrow further right */
+}
+
+.cardShadow {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Optional hover effect */
+.cardShadow:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ProductoverviewCard {
+    width: 300px;
+}
+
+/* Responsive Design for Tablets */
+@media only screen and (max-width: 1200px) {
+    .products-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .card{
+        border: none;
+    }
+    .product-list {
+        width: 100%;
+    }
+    .fixed-card {
+        max-width: 100% !important;
+        position: relative; /* Avoid overlapping on small screens */
+        margin-top: 20px;
+    }
+    .ProductoverviewCard {
+        width: 600px;
+        max-width: 90%;
+    }
+    .custom-prev {
+        left: 0px !important;
+    }
+    .custom-next {
+        right: 0px !important;
+    }
+}
+
+/* Responsive Design for Mobile */
+@media only screen and (max-width: 600px) {
+    .product-list {
+        width: 100%;
+    }
+    .fixed-card {
+        max-width: 100% !important;
+        position: relative;
+    }
+    /* .ProductoverviewCard {
+        width: 100%;
+        max-width: 100%;
+    } */
+    .custom-prev, .custom-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .custom-prev {
+        left: -10px !important;
+    }
+    .custom-next {
+        right: -10px !important;
+    }
+}
